@@ -1,0 +1,68 @@
+# Default values for smc-webapp.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+image:
+  repository: nginx
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: ""
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  name: "webapp"
+
+
+
+
+webapp:
+  replicas: 1
+  image:
+    repository: dimitri98/openjdk17-webapp
+    tag: latest
+  resources:
+    limits:
+      cpu: "1"
+      memory: "512Mi"
+    requests:
+      cpu: "0.5"
+      memory: "256Mi"
+  servicePort: 80
+  containerPort: 8080
+  env:
+    rabbitmqHost: rabbitmq
+    rabbitmqPort: "5672"
+
+ingress:
+  name: webapp-service
+  port:
+    number: 80
+
+
+
+elasticsearch:
+  host: elasticsearch-hostname
+  port: 9200
+  image: busybox
+  spec:
+    replicas: 1
+  selector.matchLabels.app: elastic
+  serviceName: elastic-service
+
+rabbitmq:
+  host: rabbitmq-hostname
+  port: 5672
+  username: guest
+  password: guest
+
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}

@@ -1,0 +1,33 @@
+# my-webapp/templates/statefulset.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: webapp-deployment
+spec:
+  replicas: {{ .Values.webapp.replicas }}
+  selector:
+    matchLabels:
+      app: {{ include "smc-webapp.name" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "smc-webapp.name" . }}
+    spec:
+      containers:
+        - name: webapp-container
+          image: {{ .Values.webapp.image.repository }}
+          resources:
+            limits:
+              cpu: "{{ .Values.webapp.resources.limits.cpu }}"
+              memory: "{{ .Values.webapp.resources.limits.memory }}"
+            requests:
+              cpu: "{{ .Values.webapp.resources.requests.cpu }}"
+              memory: "{{ .Values.webapp.resources.requests.memory }}"
+          ports:
+            - containerPort: {{ .Values.webapp.containerPort }}
+              name: http
+          env:
+            - name: SPRING_RABBITMQ_HOST
+              value: "{{ .Values.webapp.env.rabbitmqHost }}"
+            - name: SPRING_RABBITMQ_PORT
+              value: "{{ .Values.webapp.env.rabbitmqPort }}"

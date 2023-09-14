@@ -1,0 +1,12 @@
+# my-webapp/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: webapp-service
+spec:
+  selector:
+    app: {{ include "smc-webapp.name" . }}
+  ports:
+    - protocol: TCP
+      port: {{ .Values.webapp.servicePort }}
+      targetPort: {{ .Values.webapp.containerPort }}
